@@ -1,0 +1,6 @@
+exp1_batchsize_train_accuracy.png
+exp1_batchsize_valid_accuracy.png
+exp2_lr_valid_accuracy.png
+exp3_aug_valid_accuracy.png
+exp4_model_best_val_bar.png
+sample_plates_grid.png   (if you want)
