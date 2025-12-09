@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ClearPlate AI – Project Overview</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container header-inner">
+    <div>
+      <h1>ClearPlate AI</h1>
+      <p class="subtitle">Classifying Clear vs. Obscured License Plates Using AlexNet</p>
+    </div>
+    <nav>
+      <a href="index.html" class="active">Overview</a>
+      <a href="technical.html">Technical Approach</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="hero">
+    <div class="hero-text">
+      <h2>Why License Plate Clarity Matters</h2>
+      <p>
+        Automatic License Plate Recognition (ALPR) systems are used for tolling, traffic monitoring, parking,
+        and public safety. In practice, license plates are rarely “perfect”: they can be covered by dirt,
+        glare, snow, motion blur, or even intentionally obscured. These real-world conditions make it hard
+        for ALPR systems to read plates reliably.
+      </p>
+      <p>
+        <strong>ClearPlate AI</strong> explores whether a convolutional neural network (AlexNet) can learn to
+        distinguish between <strong>clear</strong> plates and <strong>obscured</strong> plates. The goal is not
+        to read the plate number itself, but to flag “hard” images that may need extra processing or human review.
+      </p>
+    </div>
+    <div class="hero-card">
+      <h3>Project Snapshot</h3>
+      <ul>
+        <li><strong>Task:</strong> Binary image classification</li>
+        <li><strong>Classes:</strong> Clear vs. Obscured license plates</li>
+        <li><strong>Model:</strong> AlexNet (PyTorch)</li>
+        <li><strong>Runs:</strong> 100+ training experiments</li>
+        <li><strong>Tools:</strong> Google Colab, PyTorch, Weights &amp; Biases</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Problem Statement</h2>
+    <p>
+      Many ALPR systems assume that the input image is “good enough” to read. In reality, a significant fraction
+      of plates are partially blocked, reflective, or dirty. Instead of treating all images the same, it would be
+      useful to have a model that first answers a simpler question:
+    </p>
+    <blockquote>
+      “Is this license plate <strong>clear</strong> enough for standard processing, or is it <strong>obscured</strong>
+      and likely to cause errors?”
+    </blockquote>
+    <p>
+      A clarity classifier could be inserted at the front of an ALPR pipeline to:
+    </p>
+    <ul>
+      <li>Route “clean” images to the standard recognition system.</li>
+      <li>Send “obscured” images to enhanced processing (e.g., denoising, super-resolution) or human review.</li>
+      <li>Provide statistics on how often plates are unreadable in a given environment.</li>
+    </ul>
+  </section>
+
+  <section class="section">
+    <h2>Project Goals</h2>
+    <div class="grid-2">
+      <div>
+        <h3>Core Objectives</h3>
+        <ul>
+          <li>Build a labeled dataset of clear vs. obscured license plate images.</li>
+          <li>Adapt AlexNet for binary classification on this dataset.</li>
+          <li>Compare pretrained vs. untrained AlexNet performance.</li>
+          <li>Analyze accuracy and generalization on a small, realistic dataset.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Big Picture Motivation</h3>
+        <p>
+          This project connects deep learning to a concrete, messy real-world problem. Rather than training on a
+          huge benchmark dataset, ClearPlate AI asks: <em>What can we do with a small, hand-collected dataset that
+          looks more like real traffic camera footage?</em>
+        </p>
+        <p>
+          Even if the model is not perfect, learning how initialization, augmentation, and architecture choices
+          affect performance is directly relevant to deploying trustworthy AI in safety-critical systems.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Quick Links</h2>
+    <ul>
+      <li><a href="technical.html">Technical Approach &amp; Experiments (AlexNet details)</a></li>
+      <li><a href="https://wandb.ai" target="_blank" rel="noopener">Weights &amp; Biases experiment dashboard (project runs)</a> (link to your real run here)</li>
+      <li><a href="https://github.com" target="_blank" rel="noopener">GitHub repository</a> (link to your repo here)</li>
+    </ul>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>ClearPlate AI – Course Project • Math Data 2025 • Florida Atlantic University</p>
+  </div>
+</footer>
+</body>
+</html>
