@@ -134,6 +134,7 @@
   <section class="section">
     <h2>Experiments &amp; Visualizations</h2>
 
+    <!-- Experiment 1: Batch size -->
     <div class="grid-2">
       <div>
         <h3>Experiment 1: Batch Size Comparison</h3>
@@ -148,20 +149,21 @@
         </ul>
       </div>
       <div class="card">
-        <p><strong>Plots:</strong></p>
+        <p><strong>Plots shown below:</strong></p>
         <ul>
-          <li><code>img/exp1_batchsize_train_accuracy.png</code></li>
-          <li><code>img/exp1_batchsize_valid_accuracy.png</code></li>
+          <li><code>img/BATCH_train.png</code> – training accuracy for batch sizes 16 and 64</li>
+          <li><code>img/BATCH_valid.png</code> – validation accuracy for batch sizes 16 and 64</li>
         </ul>
-        <p>These come from the W&amp;B train/accuracy and valid/accuracy panels filtered to the two batch-size runs.</p>
+        <p>Both plots come from the wandb <em>train/accuracy</em> and <em>valid/accuracy</em> panels filtered to the two batch-size runs.</p>
       </div>
     </div>
 
     <div class="plots-row">
-      <img src="img/exp1_batchsize_train_accuracy.png" alt="Training accuracy for different batch sizes" class="plot">
-      <img src="img/exp1_batchsize_valid_accuracy.png" alt="Validation accuracy for different batch sizes" class="plot">
+      <img src="img/BATCH_train.png" alt="Training accuracy for batch sizes 16 and 64" class="plot">
+      <img src="img/BATCH_valid.png" alt="Validation accuracy for batch sizes 16 and 64" class="plot">
     </div>
 
+    <!-- Experiment 2: Learning rate -->
     <div class="grid-2" style="margin-top: 2rem;">
       <div>
         <h3>Experiment 2: Learning Rate Tuning</h3>
@@ -172,18 +174,21 @@
         </p>
       </div>
       <div class="card">
-        <p><strong>Plot:</strong></p>
+        <p><strong>Plots shown below:</strong></p>
         <ul>
-          <li><code>img/exp2_lr_valid_accuracy.png</code></li>
+          <li><code>img/LE_train.png</code> – training accuracy for different learning rates</li>
+          <li><code>img/LE_valid.png</code> – validation accuracy for different learning rates</li>
         </ul>
-        <p>Validation accuracy curves comparing learning rates across epochs.</p>
+        <p>These curves visualize how step size affects convergence speed and final performance.</p>
       </div>
     </div>
 
     <div class="plots-row">
-      <img src="img/exp2_lr_valid_accuracy.png" alt="Validation accuracy for different learning rates" class="plot">
+      <img src="img/LE_train.png" alt="Training accuracy for different learning rates" class="plot">
+      <img src="img/LE_valid.png" alt="Validation accuracy for different learning rates" class="plot">
     </div>
 
+    <!-- Experiment 3: Data augmentation -->
     <div class="grid-2" style="margin-top: 2rem;">
       <div>
         <h3>Experiment 3: Data Augmentation</h3>
@@ -193,18 +198,21 @@
         </p>
       </div>
       <div class="card">
-        <p><strong>Plot:</strong></p>
+        <p><strong>Plots shown below:</strong></p>
         <ul>
-          <li><code>img/exp3_aug_valid_accuracy.png</code></li>
+          <li><code>img/AUG_train.png</code> – training accuracy with vs. without augmentation</li>
+          <li><code>img/AUG_valid.png</code> – validation accuracy with vs. without augmentation</li>
         </ul>
-        <p>Validation accuracy with vs. without data augmentation.</p>
+        <p>The validation plot highlights how augmentation helps generalization compared to a no-augmentation baseline.</p>
       </div>
     </div>
 
     <div class="plots-row">
-      <img src="img/exp3_aug_valid_accuracy.png" alt="Validation accuracy with and without augmentation" class="plot">
+      <img src="img/AUG_train.png" alt="Training accuracy with and without data augmentation" class="plot">
+      <img src="img/AUG_valid.png" alt="Validation accuracy with and without data augmentation" class="plot">
     </div>
 
+    <!-- Experiment 4: Model comparison -->
     <div class="grid-2" style="margin-top: 2rem;">
       <div>
         <h3>Experiment 4: Model Comparison</h3>
@@ -215,16 +223,16 @@
         </p>
       </div>
       <div class="card">
-        <p><strong>Plot:</strong></p>
+        <p><strong>Plot shown below:</strong></p>
         <ul>
-          <li><code>img/exp4_model_best_val_bar.png</code></li>
+          <li><code>img/res_vs_alex.png</code> – bar chart of best validation accuracy for ResNet18 and AlexNet variants</li>
         </ul>
-        <p>Bar chart of best validation accuracy for ResNet18, pretrained AlexNet, baseline AlexNet, and untrained AlexNet.</p>
+        <p>This comparison summarizes how architecture and initialization affect peak validation performance.</p>
       </div>
     </div>
 
     <div class="plots-row">
-      <img src="img/exp4_model_best_val_bar.png" alt="Best validation accuracy by model" class="plot">
+      <img src="img/res_vs_alex.png" alt="Best validation accuracy for ResNet18 and AlexNet variants" class="plot">
     </div>
   </section>
 
