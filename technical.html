@@ -21,7 +21,7 @@
 
 <main class="container">
   <section class="section">
-    <h2>Dataset & Preprocessing</h2>
+    <h2>Dataset &amp; Preprocessing</h2>
     <div class="grid-2">
       <div>
         <p>
@@ -33,7 +33,8 @@
         </ul>
         <p>
           Images were collected manually and roughly reflect real-world camera conditions (lighting variation,
-          different vehicles, varying plate angles).
+          different vehicles, varying plate angles). Obstructions include blur, glare, dirt, weather, and
+          partial occlusion.
         </p>
         <p>Preprocessing steps:</p>
         <ul>
@@ -84,32 +85,35 @@
         <h3>Model Variants</h3>
         <ul>
           <li><strong>Pretrained AlexNet</strong> – initialized with ImageNet weights.</li>
+          <li><strong>Baseline AlexNet</strong> – standard training on this dataset.</li>
           <li><strong>Untrained AlexNet</strong> – random initialization.</li>
+          <li><strong>ResNet18</strong> – deeper residual network for architecture comparison.</li>
         </ul>
         <p>
-          Comparing pretrained vs. untrained models highlights the impact of transfer learning on a small, specialized dataset.
+          Comparing these models highlights the impact of transfer learning and architecture depth on a small,
+          specialized dataset.
         </p>
       </div>
     </div>
   </section>
 
   <section class="section">
-    <h2>Training Setup & Hyperparameters</h2>
+    <h2>Training Setup &amp; Hyperparameters</h2>
     <div class="grid-3">
       <div class="card">
         <h3>Optimization</h3>
         <ul>
-          <li>Optimizer: <strong>Adam</strong></li>
+          <li>Optimizer: <strong>SGD with momentum</strong></li>
           <li>Loss: <strong>CrossEntropyLoss</strong></li>
-          <li>Devices: GPU in Google Colab (if available)</li>
+          <li>Device: GPU in Google Colab (when available)</li>
         </ul>
       </div>
       <div class="card">
         <h3>Hyperparameters</h3>
         <ul>
-          <li>Batch sizes: <strong>16</strong> and <strong>32</strong></li>
-          <li>Learning rates: <strong>1e-3</strong> and <strong>1e-4</strong></li>
-          <li>Epochs: multiple runs per setting</li>
+          <li>Batch sizes: <strong>16</strong> and <strong>64</strong> (batch-size experiment)</li>
+          <li>Learning rates: <strong>1e-3</strong> and <strong>1e-4</strong> (LR tuning)</li>
+          <li>Epochs: 30 per run</li>
         </ul>
       </div>
       <div class="card">
@@ -126,57 +130,111 @@
     </div>
   </section>
 
+  <!-- EXPERIMENTS & VISUALIZATIONS -->
   <section class="section">
-    <h2>Results & Visualizations</h2>
+    <h2>Experiments &amp; Visualizations</h2>
+
     <div class="grid-2">
       <div>
-        <h3>Accuracy Summary</h3>
+        <h3>Experiment 1: Batch Size Comparison</h3>
         <p>
-          Across all experiments, <strong>pretrained AlexNet</strong> achieved the strongest validation performance,
-          with the best run reaching around <strong>86–87% validation accuracy</strong> on the small dataset.
-        </p>
-        <p>
-          Untrained models performed worse overall and showed larger gaps between training and validation accuracy,
-          indicating more severe overfitting.
+          We trained AlexNet with batch sizes of <strong>16</strong> and <strong>64</strong> to measure training
+          stability and generalization. Larger batch sizes produced smoother training curves but slightly lower
+          validation accuracy.
         </p>
         <ul>
-          <li>Training accuracy often climbed to 96–100%.</li>
-          <li>Validation accuracy lagged, especially for untrained models.</li>
+          <li>Batch 16: faster learning, more variation across epochs.</li>
+          <li>Batch 64: smoother curves, slightly worse best validation accuracy.</li>
         </ul>
       </div>
       <div class="card">
-        <h3>Insert Your Plots Here</h3>
-        <p>
-          Replace these placeholders with exported images from your Colab / W&amp;B:
-        </p>
+        <p><strong>Plots:</strong></p>
         <ul>
-          <li><code>img/val_accuracy_by_model.png</code></li>
-          <li><code>img/generalization_gap_by_model.png</code></li>
-          <li><code>img/example_wandb_run_curve.png</code></li>
+          <li><code>img/exp1_batchsize_train_accuracy.png</code></li>
+          <li><code>img/exp1_batchsize_valid_accuracy.png</code></li>
         </ul>
-        <p>
-          Example:
-        </p>
-        <pre><code>&lt;img src="img/val_accuracy_by_model.png" 
-     alt="Validation accuracy by model type" 
-     class="plot"&gt;</code></pre>
+        <p>These come from the W&amp;B train/accuracy and valid/accuracy panels filtered to the two batch-size runs.</p>
       </div>
     </div>
 
     <div class="plots-row">
-      <!-- Replace these with your real image files -->
-      <img src="img/val_accuracy_by_model.png" alt="Validation accuracy by model type" class="plot">
-      <img src="img/generalization_gap_by_model.png" alt="Generalization gap by model type" class="plot">
+      <img src="img/exp1_batchsize_train_accuracy.png" alt="Training accuracy for different batch sizes" class="plot">
+      <img src="img/exp1_batchsize_valid_accuracy.png" alt="Validation accuracy for different batch sizes" class="plot">
+    </div>
+
+    <div class="grid-2" style="margin-top: 2rem;">
+      <div>
+        <h3>Experiment 2: Learning Rate Tuning</h3>
+        <p>
+          We compared learning rates of <strong>1e-3</strong> and <strong>1e-4</strong>. A learning rate of
+          <strong>1e-3</strong> converged faster and yielded the best validation accuracy, while 1e-4 was more
+          conservative but slower to reach its peak.
+        </p>
+      </div>
+      <div class="card">
+        <p><strong>Plot:</strong></p>
+        <ul>
+          <li><code>img/exp2_lr_valid_accuracy.png</code></li>
+        </ul>
+        <p>Validation accuracy curves comparing learning rates across epochs.</p>
+      </div>
+    </div>
+
+    <div class="plots-row">
+      <img src="img/exp2_lr_valid_accuracy.png" alt="Validation accuracy for different learning rates" class="plot">
+    </div>
+
+    <div class="grid-2" style="margin-top: 2rem;">
+      <div>
+        <h3>Experiment 3: Data Augmentation</h3>
+        <p>
+          We trained AlexNet with and without augmentation. Augmentation (random flips, rotation, brightness jitter)
+          reduced overfitting and improved validation accuracy by roughly <strong>3–5%</strong> on this small dataset.
+        </p>
+      </div>
+      <div class="card">
+        <p><strong>Plot:</strong></p>
+        <ul>
+          <li><code>img/exp3_aug_valid_accuracy.png</code></li>
+        </ul>
+        <p>Validation accuracy with vs. without data augmentation.</p>
+      </div>
+    </div>
+
+    <div class="plots-row">
+      <img src="img/exp3_aug_valid_accuracy.png" alt="Validation accuracy with and without augmentation" class="plot">
+    </div>
+
+    <div class="grid-2" style="margin-top: 2rem;">
+      <div>
+        <h3>Experiment 4: Model Comparison</h3>
+        <p>
+          Finally, we compared AlexNet variants with a deeper <strong>ResNet18</strong> model. Pretrained AlexNet
+          achieved the best performance among AlexNet runs (~86–87% validation accuracy), while ResNet18 reached the
+          highest overall validation accuracy on this task.
+        </p>
+      </div>
+      <div class="card">
+        <p><strong>Plot:</strong></p>
+        <ul>
+          <li><code>img/exp4_model_best_val_bar.png</code></li>
+        </ul>
+        <p>Bar chart of best validation accuracy for ResNet18, pretrained AlexNet, baseline AlexNet, and untrained AlexNet.</p>
+      </div>
+    </div>
+
+    <div class="plots-row">
+      <img src="img/exp4_model_best_val_bar.png" alt="Best validation accuracy by model" class="plot">
     </div>
   </section>
 
   <section class="section">
     <h2>Takeaways</h2>
     <ul>
-      <li>Transfer learning (pretrained AlexNet) clearly improves performance on a small, domain-specific dataset.</li>
-      <li>The model can learn to distinguish clear vs. obscured plates reasonably well, but overfitting is a concern.</li>
-      <li>Dataset size and diversity are the main limitations, not model capacity.</li>
-      <li>In a real ALPR pipeline, even an imperfect clarity classifier could be useful for routing “difficult” images.</li>
+      <li>Transfer learning (pretrained AlexNet) clearly improves performance on a small, domain-specific dataset, reaching ~86–87% validation accuracy.</li>
+      <li>Data augmentation and appropriate learning rates are crucial for controlling overfitting.</li>
+      <li>ResNet18, a deeper residual architecture, outperformed AlexNet overall but is more complex.</li>
+      <li>Even an imperfect clarity classifier can be useful in an ALPR pipeline to route difficult images for extra processing or review.</li>
     </ul>
   </section>
 </main>
