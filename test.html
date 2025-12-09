@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClearPlate AI – Clear vs Obscured License Plate Classification</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: #ffffff;
+            padding: 6px;
+            min-height: 100vh;
+        }
+
+        .poster {
+            width: 100%;
+            min-height: calc(100vh - 12px);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
+
+        .header {
+            grid-column: 1 / -1;
+            text-align: center;
+            border-bottom: 2px solid #b26df2;
+            padding-bottom: 4px;
+            margin-bottom: 4px;
+        }
+
+        .header h1 {
+            font-size: 1.6em;
+            color: #2c3e50;
+            font-weight: 700;
+        }
+
+        .header .subtitle {
+            font-size: 0.95em;
+            color: #7f8c8d;
+        }
+
+        .header .meta {
+            margin-top: 4px;
+            font-size: 0.9em;
+            color: #2c3e50;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 0.9em;
+        }
+
+        .section {
+            background: #f8f9fa;
+            border-left: 3px solid #b26df2;
+            padding: 6px;
+        }
+
+        .section h2 {
+            font-size: 1.15em;
+            color: #2c3e50;
+            margin-bottom: 4px;
+            border-bottom: 1px solid #b26df2;
+            padding-bottom: 2px;
+        }
+
+        .section h3 {
+            font-size: 1em;
+            color: #34495e;
+            margin-top: 6px;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        p {
+            font-size: 0.9em;
+            margin: 2px 0;
+            line-height: 1.4;
+        }
+
+        ul {
+            margin-left: 15px;
+            font-size: 0.9em;
+        }
+
+        ul li {
+            margin: 1px 0;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px;
+            margin-top: 4px;
+        }
+
+        .info-card {
+            background: #ffffff;
+            padding: 4px;
+            border-top: 2px solid #b26df2;
+        }
+
+        .info-card h4 {
+            color: #b26df2;
+            font-size: 1em;
+            margin-bottom: 2px;
+        }
+
+        .graph-container {
+            text-align: center;
+            background: #ffffff;
+            padding: 4px;
+        }
+
+        .graph-container img {
+            max-width: 100%;
+            height: auto;
+            max-height: 280px;
+            object-fit: contain;
+        }
+
+        .graph-container h4 {
+            font-size: 1em;
+            margin-bottom: 3px;
+            color: #2c3e50;
+        }
+
+        .two-graphs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px;
+            margin-top: 4px;
+        }
+
+        .two-graphs .graph-container img {
+            max-height: 240px;
+        }
+
+        .architecture {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 6px;
+            font-family: "Courier New", monospace;
+            font-size: 0.85em;
+            line-height: 1.5;
+            white-space: pre;
+            overflow-x: auto;
+        }
+
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 4px;
+            font-family: "Courier New", monospace;
+            font-size: 0.85em;
+            margin: 3px 0;
+            overflow-x: auto;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+<div class="poster">
+
+    <!-- HEADER -->
+    <div class="header">
+        <h1>ClearPlate AI: Distinguishing Clear vs Obscured License Plates</h1>
+        <div class="subtitle">Binary Image Classification Using AlexNet and Transfer Learning</div>
+        <div class="meta">
+            <strong>Paris Connor</strong> – Florida Atlantic University · Math Data 2025
+        </div>
+    </div>
+
+    <!-- LEFT COLUMN -->
+    <div class="column">
+
+        <!-- Problem Statement -->
+        <div class="section">
+            <h2>Problem Statement</h2>
+            <p>Automatic License Plate Recognition (ALPR) systems assume that plates are clearly visible. In practice, license plates are often blurred, dirty, covered in snow, or intentionally obstructed. These low-quality inputs reduce recognition accuracy and can lead to misreads, missed detections, and extra manual review.</p>
+            <p><strong>Goal:</strong> Build a classifier that decides whether a license plate image is <strong>clear</strong> or <strong>obscured</strong> before it is passed to an ALPR model. This pre–filter can route clear plates to standard processing and flag difficult cases for enhanced processing or human review.</p>
+        </div>
+
+        <!-- Methods -->
+        <div class="section">
+            <h2>Methods</h2>
+
+            <h3>Dataset & Preprocessing</h3>
+            <p>We collected a small, labeled dataset of plate crops:</p>
+            <ul>
+                <li>240 total images: 120 clear, 120 obscured</li>
+                <li>Obstructions include blur, snow, glare, dirt, and partial occlusions</li>
+                <li>Resized to 224×224 RGB and normalized using ImageNet statistics</li>
+                <li>70% training / 30% validation split</li>
+            </ul>
+
+            <h3>Model Architecture (AlexNet)</h3>
+            <div class="architecture">
+Input: 3×224×224 RGB plate images
+  ↓ 5× Convolution + ReLU + MaxPool layers
+     • Learn edges, textures, and plate structure
+  ↓ Flatten → Fully Connected layers (3)
+     • FC1: 4096 units + ReLU + Dropout(0.5)
+     • FC2: 4096 units + ReLU + Dropout(0.5)
+     • FC3: 2 output units (Clear, Obscured)
+  ↓ Softmax
+     Output: class probabilities for plate clarity
+            </div>
+            <p><strong>Transfer learning:</strong> The convolutional feature extractor was initialized with ImageNet pretrained weights. The final classifier layer was replaced with a 2-class output and fine-tuned on the plate dataset.</p>
+
+            <h3>Training Setup</h3>
+            <div class="info-grid">
+                <div class="info-card">
+                    <h4>Data Augmentation</h4>
+                    <ul>
+                        <li>Random horizontal flip (p=0.5)</li>
+                        <li>Random small rotations</li>
+                        <li>Standard ImageNet normalization</li>
+                        <li>Augmentation applied only to training set</li>
+                    </ul>
+                </div>
+                <div class="info-card">
+                    <h4>Training Strategy</h4>
+                    <ul>
+                        <li>Optimizer: Adam</li>
+                        <li>Learning rates: 1e-3 and 1e-4</li>
+                        <li>Batch sizes: 16 and 32</li>
+                        <li>Loss: CrossEntropyLoss</li>
+                        <li>Epochs per run: 30</li>
+                        <li>Device: CUDA when available (Colab)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Experimental Structure</h3>
+            <p>Using a Colab notebook and Weights &amp; Biases, we ran a grid of 100 experiments varying:</p>
+            <ul>
+                <li>Batch size (16 vs 32)</li>
+                <li>Learning rate (1e-3 vs 1e-4)</li>
+                <li>Data augmentation (on vs off)</li>
+                <li>Initialization (pretrained vs untrained AlexNet)</li>
+            </ul>
+            <p>Each run logged training and validation accuracy/loss, allowing direct comparison of model behavior across configurations.</p>
+        </div>
+
+        <!-- Discussion -->
+        <div class="section">
+            <h2>Discussion</h2>
+            <p><strong>Patterns observed:</strong> Pretrained AlexNet models consistently achieved higher validation accuracy and smaller generalization gaps than untrained models. Data augmentation modestly improved generalization, especially when used with a lower learning rate.</p>
+            <p><strong>Overfitting:</strong> Training accuracy often approached 96–100%, while validation accuracy plateaued in the 75–87% range. This indicates overfitting driven by the small dataset size, which is typical in real-world image tasks with limited data.</p>
+            <p><strong>Challenging cases:</strong> Misclassifications were dominated by borderline images—plates partially covered in snow, heavy glare, or strong motion blur. These cases highlight the need for more diverse training data and potentially deeper architectures.</p>
+        </div>
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="column">
+
+        <!-- Experiments & Results -->
+        <div class="section">
+            <h2>Experiments and Results</h2>
+            <p><strong>Training configuration (typical best run):</strong> Batch size 32, learning rate 1e-4, Adam optimizer, pretrained AlexNet, with augmentation.</p>
+
+            <!-- MAIN TRAINING GRAPH -->
+            <div class="graph-container" style="margin: 8px 0;">
+                <h4>Training &amp; Validation Accuracy over Epochs</h4>
+                <!-- TODO: replace src with your real graph path -->
+                <img src="graphs/accuracy_curve.png" alt="Accuracy curves (placeholder)">
+            </div>
+
+            <!-- TWO SMALLER GRAPHS -->
+            <div class="two-graphs" style="margin: 8px 0;">
+                <div class="graph-container">
+                    <h4>Loss Curves</h4>
+                    <!-- TODO: replace src with your real loss graph -->
+                    <img src="graphs/loss_curve.png" alt="Loss curves (placeholder)">
+                </div>
+                <div class="graph-container">
+                    <h4>Validation Accuracy by Model Type</h4>
+                    <!-- TODO: bar chart showing baseline vs pretrained vs untrained -->
+                    <img src="graphs/model_comparison.png" alt="Model comparison (placeholder)">
+                </div>
+            </div>
+
+            <p style="margin-top: 8px;">
+                <strong>Key findings:</strong>
+            </p>
+            <ul>
+                <li>Best validation accuracy: <strong>≈ 86.7%</strong> using pretrained AlexNet with LR = 1e-4 and batch size 32.</li>
+                <li>Untrained AlexNet models performed worse, with larger gaps between training and validation accuracy.</li>
+                <li>Pretrained models provided faster convergence and more stable performance across hyperparameters.</li>
+                <li>Augmentation reduced overfitting slightly but cannot fully compensate for the small dataset size.</li>
+            </ul>
+        </div>
+
+        <!-- Sample Images -->
+        <div class="section">
+            <h2>Sample Images</h2>
+            <p>Examples of clear and obscured plate crops used during training:</p>
+            <div class="two-graphs">
+                <div class="graph-container">
+                    <h4>Clear Plates</h4>
+                    <!-- TODO: replace with real clear plate collage or single image -->
+                    <img src="images/clear_example.jpg" alt="Clear license plate (placeholder)">
+                </div>
+                <div class="graph-container">
+                    <h4>Obscured Plates</h4>
+                    <!-- TODO: replace with real obscured plate collage -->
+                    <img src="images/obscured_example.jpg" alt="Obscured license plate (placeholder)">
+                </div>
+            </div>
+            <p style="margin-top: 6px;">Obscured examples include plates covered by snow, partially hidden by objects, or washed out by strong glare or motion blur.</p>
+        </div>
+
+        <!-- Conclusions -->
+        <div class="section">
+            <h2>Conclusions and Future Work</h2>
+            <p><strong>Summary:</strong> ClearPlate AI demonstrates that a relatively small CNN, especially when initialized with pretrained ImageNet weights, can effectively distinguish between clear and obscured license plates. This classifier can serve as a quality-control step in ALPR pipelines.</p>
+            <p><strong>Key learnings:</strong></p>
+            <ul>
+                <li>Transfer learning is critical for strong performance on small image datasets.</li>
+                <li>Overfitting is a major challenge; regularization and augmentation help but do not solve data scarcity.</li>
+                <li>Some obstruction types (e.g., heavy snow or glare) are intrinsically difficult and may require more specialized models.</li>
+            </ul>
+
+            <p><strong>Future work:</strong></p>
+            <ul>
+                <li>Collect a larger, more diverse dataset across weather, lighting, and camera types.</li>
+                <li>Compare AlexNet with deeper architectures such as ResNet18 and VGG16.</li>
+                <li>Move from binary classification (clear vs obscured) to multi-class labels for specific obstruction types.</li>
+                <li>Integrate the classifier into a full ALPR pipeline and measure end-to-end improvements.</li>
+                <li>Explore real-time deployment on edge devices or traffic cameras.</li>
+            </ul>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
