@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ClearPlate AI – Technical Approach</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container header-inner">
+    <div>
+      <h1>ClearPlate AI</h1>
+      <p class="subtitle">Technical Approach, Experiments, and Results</p>
+    </div>
+    <nav>
+      <a href="index.html">Overview</a>
+      <a href="technical.html" class="active">Technical Approach</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="section">
+    <h2>Dataset & Preprocessing</h2>
+    <div class="grid-2">
+      <div>
+        <p>
+          The dataset consists of <strong>240 images</strong> of license plates:
+        </p>
+        <ul>
+          <li>120 labeled as <strong>clear</strong></li>
+          <li>120 labeled as <strong>obscured</strong></li>
+        </ul>
+        <p>
+          Images were collected manually and roughly reflect real-world camera conditions (lighting variation,
+          different vehicles, varying plate angles).
+        </p>
+        <p>Preprocessing steps:</p>
+        <ul>
+          <li>Resize to <code>224×224</code> pixels.</li>
+          <li>Convert to RGB tensors.</li>
+          <li>Normalize using ImageNet mean and standard deviation.</li>
+          <li>Split into <strong>70% training</strong> and <strong>30% validation</strong>.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Data Augmentation</h3>
+        <p>Certain experiments included light augmentation:</p>
+        <ul>
+          <li>Random horizontal flip</li>
+          <li>Small random rotations</li>
+          <li>Brightness / contrast jitter</li>
+        </ul>
+        <p>
+          Because the dataset is small, augmentation is important to reduce overfitting and mimic more realistic
+          variation in plate images.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>AlexNet Architecture</h2>
+    <div class="grid-2">
+      <div>
+        <p>
+          AlexNet is a classic convolutional neural network originally developed for the ImageNet Large Scale Visual
+          Recognition Challenge. In this project, the standard PyTorch AlexNet implementation was adapted for
+          <strong>binary classification</strong>.
+        </p>
+        <p>The main components are:</p>
+        <ul>
+          <li>Convolution + ReLU layers with learned filters</li>
+          <li>Max pooling layers for downsampling</li>
+          <li>Fully connected (dense) layers</li>
+          <li>Dropout layers to reduce overfitting</li>
+        </ul>
+        <p>
+          The final classifier layer was replaced with a <code>2-unit</code> output (clear vs. obscured) and trained
+          with cross-entropy loss.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Model Variants</h3>
+        <ul>
+          <li><strong>Pretrained AlexNet</strong> – initialized with ImageNet weights.</li>
+          <li><strong>Untrained AlexNet</strong> – random initialization.</li>
+        </ul>
+        <p>
+          Comparing pretrained vs. untrained models highlights the impact of transfer learning on a small, specialized dataset.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Training Setup & Hyperparameters</h2>
+    <div class="grid-3">
+      <div class="card">
+        <h3>Optimization</h3>
+        <ul>
+          <li>Optimizer: <strong>Adam</strong></li>
+          <li>Loss: <strong>CrossEntropyLoss</strong></li>
+          <li>Devices: GPU in Google Colab (if available)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Hyperparameters</h3>
+        <ul>
+          <li>Batch sizes: <strong>16</strong> and <strong>32</strong></li>
+          <li>Learning rates: <strong>1e-3</strong> and <strong>1e-4</strong></li>
+          <li>Epochs: multiple runs per setting</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Experiment Tracking</h3>
+        <p>
+          Training and validation metrics were logged with <strong>Weights &amp; Biases (wandb)</strong>, including:
+        </p>
+        <ul>
+          <li>Accuracy and loss curves</li>
+          <li>Run-to-run variation</li>
+          <li>Generalization gap (train vs. validation accuracy)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Results & Visualizations</h2>
+    <div class="grid-2">
+      <div>
+        <h3>Accuracy Summary</h3>
+        <p>
+          Across all experiments, <strong>pretrained AlexNet</strong> achieved the strongest validation performance,
+          with the best run reaching around <strong>86–87% validation accuracy</strong> on the small dataset.
+        </p>
+        <p>
+          Untrained models performed worse overall and showed larger gaps between training and validation accuracy,
+          indicating more severe overfitting.
+        </p>
+        <ul>
+          <li>Training accuracy often climbed to 96–100%.</li>
+          <li>Validation accuracy lagged, especially for untrained models.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Insert Your Plots Here</h3>
+        <p>
+          Replace these placeholders with exported images from your Colab / W&amp;B:
+        </p>
+        <ul>
+          <li><code>img/val_accuracy_by_model.png</code></li>
+          <li><code>img/generalization_gap_by_model.png</code></li>
+          <li><code>img/example_wandb_run_curve.png</code></li>
+        </ul>
+        <p>
+          Example:
+        </p>
+        <pre><code>&lt;img src="img/val_accuracy_by_model.png" 
+     alt="Validation accuracy by model type" 
+     class="plot"&gt;</code></pre>
+      </div>
+    </div>
+
+    <div class="plots-row">
+      <!-- Replace these with your real image files -->
+      <img src="img/val_accuracy_by_model.png" alt="Validation accuracy by model type" class="plot">
+      <img src="img/generalization_gap_by_model.png" alt="Generalization gap by model type" class="plot">
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Takeaways</h2>
+    <ul>
+      <li>Transfer learning (pretrained AlexNet) clearly improves performance on a small, domain-specific dataset.</li>
+      <li>The model can learn to distinguish clear vs. obscured plates reasonably well, but overfitting is a concern.</li>
+      <li>Dataset size and diversity are the main limitations, not model capacity.</li>
+      <li>In a real ALPR pipeline, even an imperfect clarity classifier could be useful for routing “difficult” images.</li>
+    </ul>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>ClearPlate AI – Technical Report • Math Data 2025 • Florida Atlantic University</p>
+  </div>
+</footer>
+</body>
+</html>
